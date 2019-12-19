@@ -11,6 +11,8 @@ code:
 
 - more Golang && Python3
 
+- the openldap scripts (would need de-id'd) and wrappers
+
 terra;
 - VPCs, igw and natgw's (that would pretty much cover ec2)
 
