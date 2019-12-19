@@ -1,0 +1,18 @@
+
+ansible:
+- Add NFS mount playbooks somewhere
+
+- User/GroupAdd playbooks
+
+- Special software add playbooks
+
+code:
+- Pull old single file C utils out of their own repos and move here
+
+- more Golang && Python3
+
+terra;
+- VPCs, igw and natgw's (that would pretty much cover ec2)
+
+- s3
+- 
