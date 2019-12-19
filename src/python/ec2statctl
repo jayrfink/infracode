@@ -1,0 +1,98 @@
+#!/usr/bin/python3
+# DESC: This program can be used to schedule stopping and starting of all
+#       instances in a zone with tag named "Type" and the Value as an argv
+#       With a little hacking this could be expanded, improved or used in 
+#       lambda
+# REQ: TagName of "Type"
+# USAGE: $PN running|stopped $tagvalue
+# USAGE: $PN start|stop $tagvalue
+import boto3
+import pprint
+import sys
+
+oper    = sys.argv[1]         
+typeval = sys.argv[2]         
+
+def showstate():
+	ec2 = boto3.resource('ec2')
+	instances_with = []
+	instances_without = []
+
+	for instance in ec2.instances.all():
+		if instance.state['Name'] != oper:
+			continue
+
+		has_tag = False
+		for tag in instance.tags:
+			if tag['Key'] == 'Type' and tag['Value'] == typeval:
+				has_tag = True
+				break
+
+		if has_tag:
+			instances_with.append(instance.id)
+		else:
+			instances_without.append(instance.id)
+
+	print(oper, typeval)
+	print(" %s" % instances_with)
+
+
+def startinstances():
+	ec2 = boto3.resource('ec2')
+	for instance in ec2.instances.all():
+		if instance.state['Name'] != 'stopped':
+			continue
+
+		has_tag = False
+		for tag in instance.tags:
+			if tag['Key'] == 'Type' and tag['Value'] == typeval:
+				has_tag = True
+				oper_instance = ec2.Instance(instance.id)
+				pprint.pprint(oper_instance.start())
+				break
+
+
+def stopinstances():
+	ec2 = boto3.resource('ec2')
+	for instance in ec2.instances.all():
+		if instance.state['Name'] != 'running':
+			continue
+
+		has_tag = False
+		for tag in instance.tags:
+			if tag['Key'] == 'Type' and tag['Value'] == typeval:
+				has_tag = True
+				oper_instance = ec2.Instance(instance.id)
+				pprint.pprint(oper_instance.stop())
+				break
+
+
+def descinstances():
+	ec2 = boto3.client('ec2')
+	response = ec2.describe_instances()
+	print(response)
+
+
+
+if oper in ['stopped','running']:
+	showstate()
+	sys.exit()
+
+
+if oper in ['start']:
+	startinstances()
+	sys.exit()
+
+
+if oper in ['stop']:
+	stopinstances()
+	sys.exit()
+
+
+if oper in ['all']:
+	descinstances()
+	sys.exit()
+
+
+print("Error: Incorect syntax: stop|start or stopped|running show state")
+

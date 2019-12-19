@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: simplewww
+  labels:
+    app: simple
+spec:
+  selector:
+    matchLabels:
+      app: simple
+      tier: web
+  template:
+    metadata:
+      labels:
+        app: simple
+        tier: web
+    spec:
+      containers:
+      - name: simple-www
+        image: gcr.io/google-samples/simple-www:1.0
+        ports:
+        - containerPort: 8080

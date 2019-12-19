@@ -1,0 +1,27 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: simplewww
+  annotations:
+    kubernetes.io/ingress.global-static-ip-name: simplewww-ip
+  labels:
+    app: simple
+spec:
+  backend:
+    serviceName: simplewww-backend
+    servicePort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: simplewww-backend
+  labels:
+    app: simple
+spec:
+  type: NodePort
+  selector:
+    app: simple
+    tier: web
+  ports:
+  - port: 8080
+    targetPort: 8080

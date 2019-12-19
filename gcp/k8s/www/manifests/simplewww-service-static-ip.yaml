@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: simplewww
+  labels:
+    app: simple
+spec:
+  selector:
+    app: simple
+    tier: web
+  ports:
+  - port: 80
+    targetPort: 8080
+  type: LoadBalancer
+  loadBalancerIP: "YOUR.IP.ADDRESS.HERE"
