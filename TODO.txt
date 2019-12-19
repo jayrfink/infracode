@@ -13,8 +13,10 @@ code:
 
 - the openldap scripts (would need de-id'd) and wrappers
 
-terra;
+terra:
 - VPCs, igw and natgw's (that would pretty much cover ec2)
 
 - s3
-- 
+
+deploy:
+- A full end2end deployment (TBD)
