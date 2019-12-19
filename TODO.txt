@@ -1,22 +1,14 @@
-
 ansible:
 - Add NFS mount playbooks somewhere
-
 - User/GroupAdd playbooks
-
 - Special software add playbooks
+- with keys in playbooks
+- vars
 
 code:
-- Pull old single file C utils out of their own repos and move here
-
-- more Golang && Python3
-
-- the openldap scripts (would need de-id'd) and wrappers
+- a portscanners repo with all the micro portscans
 
 terra:
-- VPCs, igw and natgw's (that would pretty much cover ec2)
-
 - s3
-
-deploy:
-- A full end2end deployment (TBD)
+- efs
+- gcp*
