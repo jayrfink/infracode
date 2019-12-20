@@ -1,5 +1,6 @@
 ansible:
 - Add NFS mount playbooks somewhere
+  use ansible vars to define this (e.g. aws.dns-fsid.com:/efs/)
 - User/GroupAdd playbooks
 - Special software add playbooks
 - with keys in playbooks
