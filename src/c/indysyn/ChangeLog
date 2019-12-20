@@ -1,0 +1,7 @@
+current
+ - added single port single host ipv6 support
+v0.02
+ - Fixed minor usage print fmt error
+ - Added single host single port ipv6 STREAM TCP check
+v0.01
+ - Initial release

@@ -1,0 +1,25 @@
+.TH INDYSYN  1 "Feb 17, 2015" "version 0.01" "USER COMMANDS"
+.SH NAME
+indysyn \- Independent scan your node tool.
+.SH SYNOPSIS
+.B indysyn
+\-h|\--host hostname ||\-s|\--short ||\-p N||\-u|\--usage
+
+.SH DESCRIPTION
+The
+.B indysyn
+program is an extremely simple top ports (configurable at build time) scanner.
+.SH OPTIONS
+.TP
+\-h hostname The only required option and argument. Hostname can be FQDN or ipv4 address.
+.TP
+\-s      Short circuit, exit the program after the first successful port check.
+.TP 
+-p N      Scan a single port and exit
+.TP
+\-u     Print usage and exit
+
+.SH AUTHOR
+Jason (Jay) R Fink <jay.fink@gmail.com>
+
+
