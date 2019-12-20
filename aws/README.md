@@ -1,14 +1,14 @@
 Demonstration Code:
 
 iam: Some sample groupings
+common-tasks: Very basic playbooks for instances
 
-us-east-segment:
- - various simple playbooks
- - an init script for ubuntu ami's
+./:
+ - init_ubuntu.sh: Sets up python3->python symlink for ansible
  - hosts for ansible
  - setenv for ansible hosts
 
-us-east-segment/terra: 
+adrift-us-east-1
 - 1 VPC
 - 1 public subnet
 - 1 private subnet
@@ -17,4 +17,8 @@ us-east-segment/terra:
 - 1 bastion instance
 - 2 private instances
 
-  NOTE: Of course you want to change the names of things in the terraform code
+  NOTE: To make customization easier, I put the word "adrift" into all of the
+        labels. 
+
+        DO look at the network (subnet) CIDRs some are as restrictive as 
+        AWS allows.
