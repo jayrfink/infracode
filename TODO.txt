@@ -1,15 +1,17 @@
 ansible:
 - Add NFS mount playbooks somewhere
   use ansible vars to define this (e.g. aws.dns-fsid.com:/efs/)
-- User/GroupAdd playbooks
-- Special software add playbooks
 - with keys in playbooks
 - vars
 
 code:
-- a portscanners repo with all the micro portscans
+- regroup into linux-utils (mmw && lscpu)
+- delete indysyn
+- bare k8s code
 
 terra:
+- variables
 - s3
 - efs
 - gcp*
+- k8s
