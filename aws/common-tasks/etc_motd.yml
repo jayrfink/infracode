@@ -1,0 +1,13 @@
+---
+- hosts: all
+  remote_user: ubuntu
+  become: yes
+  become_method: sudo
+  tasks:
+   - copy:
+      src: ../files/motd
+      dest: /etc/motd
+      owner: root
+      group: root
+      mode: 0644
+

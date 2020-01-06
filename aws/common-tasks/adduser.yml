@@ -5,7 +5,7 @@
   become_method: sudo
   tasks:
    - name: add_MY_USER
-     user: name=MY_USER shell=/bin/bash uid=1001 createhome=yes comment="RCadmin" home=/home/MY_USER
+     user: name=MY_USER shell=/bin/bash uid=1001 createhome=yes comment="MyUser" home=/home/MY_USER
    - name: add_MY_USER2sudo
      lineinfile: "dest=/etc/sudoers
        insertafter=EOF

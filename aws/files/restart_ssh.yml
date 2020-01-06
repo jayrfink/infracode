@@ -1,0 +1,12 @@
+---
+- hosts: all
+  remote_user: ubuntu
+  become: yes
+  become_method: sudo
+  tasks:
+   - name: restart-ssh
+     service:
+       name: 'ssh'
+       enabled: 'yes'
+       state: 'restarted'
+

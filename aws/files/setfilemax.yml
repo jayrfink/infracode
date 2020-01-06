@@ -1,0 +1,11 @@
+---
+- hosts: all
+  remote_user: ubuntu
+  become: yes
+  become_method: sudo
+  tasks:
+   - name: set_filemax
+     command: "echo 78877555 > /proc/sys/fs/file-max"
+   - name: restart_sysctl
+     command: "/sbin/sysctl -p"
+
