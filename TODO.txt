@@ -1,17 +1,8 @@
 ansible:
-- Add NFS mount playbooks somewhere
-  use ansible vars to define this (e.g. aws.dns-fsid.com:/efs/)
-- with keys in playbooks
 - vars
-
-code:
-- regroup into linux-utils (mmw && lscpu)
-- delete indysyn
-- bare k8s code
+- common this up for both GCP && AWS
 
 terra:
 - variables
-- s3
-- efs
 - gcp*
 - k8s
