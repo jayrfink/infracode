@@ -1,0 +1,26 @@
+---
+- hosts: {{ hosts }}
+  remote_user: ubuntu
+  become: yes
+   - name: mysql-server
+     apt: name=mysql-server state=present install_recommends=yes
+   - name: mysql-pythondb
+     apt: name=python-mysqldb state=present install_recommends=yes
+   - name: start mysqld
+     service:
+       name: 'mysql'
+       enabled: 'yes'
+       state: 'started'
+   - name: creds_cp
+    template: src=../templates/.my.cnf.j2 dest=/root/.my.cnf owner=root mode=0600
+   - name: del_anon_mysqluser
+     mysql_user:
+       name: ''
+       host_all: yes
+       state: absent
+   - name: adduser
+     mysql_user:
+       name: {{ mysql_user }}
+       password: {{ mysql_user_password }}
+       priv: '*.*:ALL'
+       state: present
