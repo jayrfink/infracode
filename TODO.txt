@@ -3,6 +3,6 @@ ansible:
 - common this up for both GCP && AWS
 
 terra:
-- variables
 - gcp*
+- variables
 - k8s
