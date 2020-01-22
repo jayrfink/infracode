@@ -1,8 +1,6 @@
-ansible:
-- vars
-- common this up for both GCP && AWS
 
-terra:
-- gcp*
-- variables
-- k8s
+- port aws/terra to gcp/terra
+- block storage for the private nodes in gcp (efs like)
+- make the ansible code usable by either platform using vars or similar
+- mysql subnet that connects to a webfront network (gcp or aws)
+
