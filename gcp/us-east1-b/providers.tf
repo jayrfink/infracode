@@ -1,6 +1,6 @@
 provider "google" {
-  credentials = "$HOME/.gcpcfgs/jayrfink-a05543cfa052.json"
-  project     = "jayrfink"
+  credentials = "$SOMEPATH/$project-uuid.json"
+  project     = "adrifterra"
   region      = "us-east1"
   zone        = "us-central1-b"
 }
