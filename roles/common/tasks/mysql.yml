@@ -1,7 +1,9 @@
 ---
-- hosts: {{ hosts }}
-  remote_user: ubuntu
+- hosts: all
   become: yes
+  vars:
+    mysql_username: adriftdba
+    mysql_password: adriftdba-mydarnsecret
    - name: mysql-server
      apt: name=mysql-server state=present install_recommends=yes
    - name: mysql-pythondb
@@ -20,7 +22,7 @@
        state: absent
    - name: adduser
      mysql_user:
-       name: {{ mysql_user }}
-       password: {{ mysql_user_password }}
+       name: "{{ mysql_username }}"
+       password: "{{ mysql_password }}"
        priv: '*.*:ALL'
        state: present

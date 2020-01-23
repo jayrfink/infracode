@@ -1,6 +1,8 @@
 
-- port aws/terra to gcp/terra
+- {wip} port aws/terra to gcp/terra
 - block storage for the private nodes in gcp (efs like)
-- make the ansible code usable by either platform using vars or similar
 - mysql subnet that connects to a webfront network (gcp or aws)
-
+- bastion host needs a bunch of stuff delivered to it someday such as:
+ * access keys to hosts on private networks
+ * initialization scripts for ansible for hosts on private networks
+ * deployment of the ansible tree onto bastion host

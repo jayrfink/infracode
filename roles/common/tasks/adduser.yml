@@ -1,0 +1,25 @@
+---
+- hosts: all
+  become: yes
+  become_method: sudo
+  vars:
+    user_name: adriftadm
+    comment: Adrift_Admin
+  tasks:
+   - name: "{{ user_name }}"
+     user: name="{{ user_name }}" shell=/bin/bash uid=1001 createhome=yes comment="{{ comment }}" home=/home/"{{ user_name }}"
+   - name: add_MY_USER2sudo
+     lineinfile: "dest=/etc/sudoers
+       insertafter=EOF
+       line='{{ user_name }} ALL=(ALL) NOPASSWD: ALL'"
+     become: yes
+     become_method: sudo
+   
+   - name: create_ssh_dir
+     file: path=/home/"{{ user_name }}"/.ssh state=directory
+        owner="{{ user_name }}" group="{{ user_name }}" mode=0700
+
+   - name: upload_pubkey
+     template: src=.keys/authorized_keys
+        dest=/home/"{{ user_name }}"/.ssh/authorized_keys
+        owner="{{ user_name }}" group="{{ user_name }}" mode=0600
