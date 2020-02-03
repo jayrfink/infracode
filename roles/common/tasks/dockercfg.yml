@@ -1,0 +1,16 @@
+---
+- hosts: all
+  become: yes
+  become_method: sudo
+  tasks:
+   - copy:
+      src: ../files/docker_config.json
+      dest: /etc/docker
+      owner: root
+      group: root
+      mode: 0644
+   - name: restart_dockerd
+     service:
+       name: 'docker'
+       enabled: 'yes'
+       state: 'restarted'
