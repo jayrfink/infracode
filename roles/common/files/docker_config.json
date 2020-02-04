@@ -1,5 +1,0 @@
-"auths": {
-	"docker-reg.adriftmedia.net": {
-		"auth": "$someencryptedpasswd"
-		}
-	},
