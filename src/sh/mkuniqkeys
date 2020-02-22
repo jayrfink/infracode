@@ -1,0 +1,17 @@
+#!/bin/bash
+# Use this to make ssh keys for someone else
+user_name=$1
+
+usage ()
+{
+	echo "$0 username"
+}
+
+if [ ! $user_name ] ; then
+	echo "Error: Invalid Username given"
+	usage
+	exit 2
+fi
+
+ssh-keygen -f rsa_$user_name -C "$user_name@dfci"
+
