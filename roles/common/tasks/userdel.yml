@@ -1,0 +1,8 @@
+# ansible-playbook -u [ubuntu|centos|redhat] -e "username=ar6" userdel.yml
+---
+- hosts: {{ hosts }}
+  become: yes
+  become_method: sudo
+  vars:
+   deluserlogin: "{{ username }}"
+

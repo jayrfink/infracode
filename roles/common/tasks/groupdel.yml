@@ -1,0 +1,13 @@
+# ansible-playbook -u [ubuntu|centos|ec2-user...] -e "groupname=$GROUPNAME" groupdel.yml
+---
+- hosts: {{ hosts }}
+  become: yes
+  become_method: sudo
+  vars:
+   delgroup: "{{ groupname }}"
+  tasks:
+   - name: delgroup
+     group:
+       name: "{{ delgroup }}"
+       state: absent
+

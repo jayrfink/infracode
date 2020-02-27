@@ -1,10 +1,14 @@
+# ansible-playbook -u [ubuntu|ec2-user|redhat|centos[$vers]] -e "username=$LOGINID usercomment="$First_LastName" adduser.yml 
+# an alternative here would be to gen the keys there and download them
+# optional add the -e "email_addr=someone@someplace.org"
 ---
 - hosts: all
   become: yes
   become_method: sudo
   vars:
-    user_name: adriftadm
-    comment: Adrift_Admin
+    user_name: "{{ username }}"
+    comment: "{{ usercomment }}"
+	newuseremail: "{{ email_addr }}"
   tasks:
    - name: "{{ user_name }}"
      user: name="{{ user_name }}" shell=/bin/bash uid=1001 createhome=yes comment="{{ comment }}" home=/home/"{{ user_name }}"
@@ -23,3 +27,11 @@
      template: src=.keys/authorized_keys
         dest=/home/"{{ user_name }}"/.ssh/authorized_keys
         owner="{{ user_name }}" group="{{ user_name }}" mode=0600
+
+# this stuff is a reference for me...
+#   - name: add_email_address
+#     shell: /bin/echo "{{ newuseremail }}" >> /rcadmin/mailaddrs
+
+#   - name: email_new_user
+#     shell: /bin/echo "Your new account has been setup." | mail -s New_account "{{ newuseremail }}"
+

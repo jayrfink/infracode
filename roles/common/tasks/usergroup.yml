@@ -1,0 +1,15 @@
+# ansible-playbook -u [ubuntu|redhat|centos] -e "username=$USER groupname=$GROUP  usergroup.yml
+---
+- hosts: {{ hosts }}  
+  become: yes
+  become_method: sudo
+  vars:
+   userlogin: "{{ username }}"
+   usrgroup: "{{ groupname }}"
+  tasks:
+   - name: Add "{{ userlogin }}" to group "{{ usrgroup }}"
+     user:
+       name: "{{ userlogin }}"
+       groups: "{{ usrgroup }}"
+       append: yes
+
