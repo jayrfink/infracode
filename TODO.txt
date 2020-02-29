@@ -1,4 +1,5 @@
-
+- convert to dynamic inventory
+- make all common playbooks reusable with 
 - block storage for the private nodes in gcp (efs like)
   and mount it with playbook(s)
 - mysql subnet that connects to a webfront network (gcp or aws)
@@ -7,3 +8,4 @@
  * initialization scripts for ansible for hosts on private networks
  * deployment of the ansible tree onto bastion host
 - {wip} port aws/terra to gcp/terra
+
