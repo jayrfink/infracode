@@ -1,0 +1,16 @@
+# call from another playbook using import 
+---
+- hosts: "{{ hostgroups }}"
+  become: yes
+  become_method: sudo
+  vars:
+    source_file: "{{ src_file }}"
+    dest_file:   "{{ dst_file }}"
+  tasks:
+   - copy:
+      src:  "{{ source_file }}"
+      dest: "{{ dest_file }}"
+      owner: "{{ username }}"
+      group: "{{ groupname }}"
+      mode: "{{ filemode }}"
+

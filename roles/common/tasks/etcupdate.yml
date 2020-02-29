@@ -1,0 +1,15 @@
+# best used for simple stuff like /etc/$filname.
+---
+- import_playbook: xferfile.yml
+  vars: 
+   hostgroups: adriftwww adriftdb
+   src_file: ../files/motd
+   dst_file: /etc/motd
+   username: root
+   groupname: root
+   file_mode: 0644
+- import_playbook: xferfile.yml
+  vars: 
+   hostgroups: adriftwww
+   src_file: ../files/profile
+   dst_file: /etc/profile
