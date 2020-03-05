@@ -1,5 +1,7 @@
+# -e "hostgroups=foo bar rusername=[ec2-user|centos|ubuntu]"
 ---
-- hosts: all
+- hosts: "{{ hostgroups }}"
+  remote_user: "{{ rusername }}"
   become: yes
   become_method: sudo
   tasks:

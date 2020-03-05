@@ -1,6 +1,6 @@
-# ansible-playbook -u [ubuntu|redhat|centos] -e "username=$USER groupname=$GROUP  usergroup.yml
+# ansible-playbook -u [ubuntu|redhat|centos] -e "hostgroups=bar username=$USER groupname=$GROUP  usergroup.yml
 ---
-- hosts: {{ hosts }}  
+- hosts: "{{ hostgroups }}"
   become: yes
   become_method: sudo
   vars:

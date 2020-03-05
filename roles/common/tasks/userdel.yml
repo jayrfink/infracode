@@ -1,6 +1,6 @@
-# ansible-playbook -u [ubuntu|centos|redhat] -e "username=ar6" userdel.yml
+# ansible-playbook -u [ubuntu|centos|redhat] -e "username=ar6 hostgroups=foo" userdel.yml
 ---
-- hosts: {{ hosts }}
+- hosts: "{{ hostgroups }}"
   become: yes
   become_method: sudo
   vars:

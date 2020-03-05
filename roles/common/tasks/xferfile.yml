@@ -1,4 +1,5 @@
 # call from another playbook using import 
+# must set all variables in the caller
 ---
 - hosts: "{{ hostgroups }}"
   become: yes

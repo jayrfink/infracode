@@ -1,9 +1,11 @@
+# -e "hostgroups=foo bar rusername=[ubuntu|ec2-user|redhat|centos]
 ---
-- hosts: all
-  remote_user: ubuntu
+- hosts: "{{ hostgroups }}"
+  remote_user: "{{ rusername }}"
   become: yes
   become_method: sudo
   vars:
+   # example 
    - efs_name: fs-XXXXXXX.efs.us-east-1.amazonaws.com
   tasks:
    - name: mount_efs

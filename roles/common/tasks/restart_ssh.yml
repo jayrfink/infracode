@@ -1,5 +1,5 @@
 ---
-- hosts: all
+- hosts: "{{ hostgroups }}"
   become: yes
   become_method: sudo
   tasks:

@@ -1,8 +1,8 @@
 In order to use these:
 
-- Change variables to match your needs
-- ansible-playbook --private-key=../.keys/$keyfile.pem  \
+- Pass in variables as needed, these are mostly explained in the playbooks
+- ansible-playbook --private-key=../.keys/$keyfile.pem (or wherever) \
 		--limit $hostgroup -u [centos|ec2-user|ubuntu|redhat] adduser.yml
 - Once your username has been added and keys set up:
-   ansible-playbook [--limit $hostgroup] selinuxoff.yml
+   ansible-playbook [-u remote_username ] -e "hostgroup=www" selinuxoff.yml
   .... etc .....

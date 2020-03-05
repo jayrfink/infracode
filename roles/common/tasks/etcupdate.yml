@@ -7,9 +7,12 @@
    dst_file: /etc/motd
    username: root
    groupname: root
-   file_mode: 0644
+   filemode: 0644
 - import_playbook: xferfile.yml
   vars: 
    hostgroups: adriftwww
    src_file: ../files/profile
    dst_file: /etc/profile
+   username: root
+   groupname: root
+   filemode: 0644

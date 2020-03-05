@@ -1,5 +1,4 @@
 - convert to dynamic inventory
-- make all common playbooks reusable with 
 - block storage for the private nodes in gcp (efs like)
   and mount it with playbook(s)
 - mysql subnet that connects to a webfront network (gcp or aws)

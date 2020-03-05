@@ -1,5 +1,6 @@
+# -e "hostgroups=foo bar"
 ---
-- hosts: all
+- hosts: "{{ hostgroups }}"
   become: yes
   vars:
     mysql_username: adriftdba
