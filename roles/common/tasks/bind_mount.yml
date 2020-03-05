@@ -1,0 +1,16 @@
+# -e "hostgroups=foo bar ... source_path=/mnt/storage/home mountd_path=/home"
+---
+- hosts: "{{ hostgroups }}"
+  become: Yes
+  become_method: sudo
+  vars:
+    src_path: "{{ source_path }}"
+    mnt_path: "{{ mountd_path }}"
+  - name: Bind /home
+    mount:
+     path: "{{ mnt_path }}"
+     src:  "{{ src_path }}"
+     opts: bind
+     state: mounted
+     fstype: none
+

@@ -1,6 +1,6 @@
-# ansible-playbook -u [ubuntu|centos|ec2-user...] -e "groupname=$GROUPNAME" groupdel.yml
+# ansible-playbook -e "hostgroups=foo ... groupname=$GROUPNAME" groupdel.yml
 ---
-- hosts: {{ hosts }}
+- hosts: "{{ hostgroups }}"
   become: yes
   become_method: sudo
   vars:

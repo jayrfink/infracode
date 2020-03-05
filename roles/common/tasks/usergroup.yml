@@ -1,4 +1,4 @@
-# ansible-playbook -u [ubuntu|redhat|centos] -e "hostgroups=bar username=$USER groupname=$GROUP  usergroup.yml
+# ansible-playbook -e "hostgroups=bar username=$USER groupname=$GROUP  usergroup.yml
 ---
 - hosts: "{{ hostgroups }}"
   become: yes

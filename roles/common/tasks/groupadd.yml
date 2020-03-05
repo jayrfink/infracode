@@ -1,6 +1,6 @@
-# ansible-playbook -u [ubuntu|ec2-user|redhat|centos[$vers]] -e "groupname=$GROUPNAME groupid=$GID" groupadd.yml
+# ansible-playbook -e "hostgroups=foo groupname=$GROUPNAME groupid=$GID" groupadd.yml
 ---
-- hosts: {{ hosts }}
+- hosts: "{{ hostgroups }}"
   become: yes
   become_method: sudo
   vars:

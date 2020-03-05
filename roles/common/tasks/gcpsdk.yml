@@ -1,0 +1,15 @@
+# -e "hostgroups=foo bar ... "
+---
+- hosts: "{{ hostgroups }}"
+  become: yes
+  become_method: sudo
+  tasks:
+   - apt_repository:
+       repo: deb http://packages.cloud.google.com/apt cloud-sdk main
+       state: present
+   - name: Add an Apt signing key
+     apt_key:
+       url:  https://packages.cloud.google.com/apt/doc/apt-key.gpg
+       state: present
+   - name: google-cloud-sdk
+     apt: name=google-cloud-sdk state=present install_recommends=yes
