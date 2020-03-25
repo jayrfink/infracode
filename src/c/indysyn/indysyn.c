@@ -214,6 +214,9 @@ exit(EXIT_SUCCESS);
 	else
 		hints.ai_socktype = SOCK_DGRAM;
 
+/*
+ * We handle this differently if it is *BSD or osX
+ */
 #ifndef LINUX
 	hints.ai_flags = AI_ADDRCONFIG;
 #endif
