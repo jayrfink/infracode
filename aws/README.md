@@ -17,8 +17,8 @@ adrift-us-east-1
 - 1 bastion instance
 - 2 private instances
 
-  NOTE: To make customization easier, I put the word "adrift" into all of the
-        labels. 
+  NOTE: To make customization easier, I put the word 
+        "adrift" into all of the labels. 
 
         DO look at the network (subnet) CIDRs some are as restrictive as 
         AWS allows.
