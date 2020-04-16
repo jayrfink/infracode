@@ -1,17 +1,155 @@
 #!/usr/bin/python3
-# DESC: This program can be used to schedule stopping and starting of all
-#       instances in a zone with tag named "Type" and the Value as an argv
-#       With a little hacking this could be expanded, improved or used in 
-#       lambda
-# REQ: TagName of "Type"
-# USAGE: $PN running|stopped $tagvalue
-# USAGE: $PN start|stop $tagvalue
+# These all require that the OS or python vers pkgs be installed
+from collections import defaultdict
+from termcolor import colored
 import boto3
 import pprint
 import sys
 
-oper    = sys.argv[1]         
-typeval = sys.argv[2]         
+"""
+Multipurpose tool to show all instances verbosely, brief listing, with optional
+Type filter. Also displays regions and zones.
+"""
+
+# Used only for filtering by running|stopped then by Type
+typeval = None
+
+if len(sys.argv) < 2:
+	oper = None
+else:
+	oper = sys.argv[1]
+
+filtered = False
+
+
+# These dump a list of all regions then all zones in *your* region
+def descec2regions():
+	ec2 = boto3.client('ec2')
+	response = ec2.describe_regions()
+	print('Regions:',response['Regions'])
+
+
+def descmyec2zones():
+	ec2 = boto3.client('ec2')
+	response = ec2.describe_availability_zones()
+	print('Availability Zones:', response['AvailabilityZones'])
+
+
+# Extremely verbose listing of every instance. Not practical for more
+# than a dozen or so. Probably need to add by Type filtering
+def colorlist():
+	ec2 = boto3.resource('ec2')
+
+	for i in ec2.instances.all():
+
+		print("Id: {0}\tState: {1}\tLaunched: {2}\tRoot Device Name: {3}".format(
+			colored(i.id, 'cyan'),
+			colored(i.state['Name'], 'green'),
+			colored(i.launch_time, 'cyan'),
+			colored(i.root_device_name, 'cyan')
+		    ))
+
+		print("\tArch: {0}\tHypervisor: {1}".format(
+			colored(i.architecture, 'cyan'),
+			colored(i.hypervisor, 'cyan')
+		))
+
+		print("\tPriv. IP: {0}\tPub. IP: {1}".format(
+			colored(i.private_ip_address, 'red'),
+			colored(i.public_ip_address, 'green')
+		))
+
+		print("\tPriv. DNS: {0}\tPub. DNS: {1}".format(
+			colored(i.private_dns_name, 'red'),
+			colored(i.public_dns_name, 'green')
+		))
+
+		print("\tSubnet: {0}\tSubnet Id: {1}".format(
+			colored(i.subnet, 'cyan'),
+			colored(i.subnet_id, 'cyan')
+		))
+
+		print("\tKernel: {0}\tInstance Type: {1}".format(
+			colored(i.kernel_id, 'cyan'),
+			colored(i.instance_type, 'cyan')
+		))
+
+		print("\tRAM Disk Id: {0}\tAMI Id: {1}\tPlatform: {2}\t EBS Optimized: {3}".format(
+			colored(i.ramdisk_id, 'cyan'),
+			colored(i.image_id, 'cyan'),
+			colored(i.platform, 'cyan'),
+			colored(i.ebs_optimized, 'cyan')
+		))
+
+		print("\tBlock Device Mappings:")
+		for idx, dev in enumerate(i.block_device_mappings, start=1):
+			print("\t- [{0}] Device Name: {1}\tVol Id: {2}\tStatus: {3}\tDeleteOnTermination: {4}\tAttachTime: {5}".format(
+				idx,
+				colored(dev['DeviceName'], 'cyan'),
+				colored(dev['Ebs']['VolumeId'], 'cyan'),
+				colored(dev['Ebs']['Status'], 'green'),
+				colored(dev['Ebs']['DeleteOnTermination'], 'cyan'),
+				colored(dev['Ebs']['AttachTime'], 'cyan')
+			))
+
+		print("\tTags:")
+		for idx, tag in enumerate(i.tags, start=1):
+			print("\t- [{0}] Key: {1}\tValue: {2}".format(
+				idx,
+				colored(tag['Key'], 'cyan'),
+				colored(tag['Value'], 'cyan')
+			))
+
+		print("\tProduct codes:")
+		for idx, details in enumerate(i.product_codes, start=1):
+			print("\t- [{0}] Id: {1}\tType: {2}".format(
+				idx,
+				colored(details['ProductCodeId'], 'cyan'),
+				colored(details['ProductCodeType'], 'cyan')
+			))
+
+		#print("Console Output:")
+		# Commented out because this creates a lot of clutter..
+		#print(i.console_output()['Output'])
+		print("--------------------")
+
+
+# XXX-jrf: The next 2 funcs have repetitive code. Find a way to either
+#          break off common code into another function or combine them
+#          and make decisions based on input flags.
+def listall():
+	ec2 = boto3.resource('ec2')
+	# Get information for all running instances
+	running_instances = ec2.instances.filter(Filters=[{
+		'Name': 'instance-state-name',
+		'Values': ['running']}])
+
+	ec2info = defaultdict()
+	for instance in running_instances:
+		for tag in instance.tags:
+			if 'Name'in tag['Key']:
+				name = tag['Value']
+		# Add instance info to a dictionary         
+		ec2info[instance.id] = {
+			'Name': name,
+			'Type': instance.instance_type,
+			'State': instance.state['Name'],
+			'Private IP': instance.private_ip_address,
+			'Public IP': instance.public_ip_address,
+			'Launch Time': instance.launch_time
+		}
+
+	attributes = ['Name', 'Type', 'State', 'Private IP', 'Public IP', 'Launch Time']
+	for instance_id, instance in ec2info.items():
+		for key in attributes:
+			# xxx-jrf: Old way of printing
+			#print("{0}: {1}".format(key, instance[key]))
+			print("{0}: {1}".format(
+				colored(key, 'yellow'),
+				colored(instance[key], 'cyan')
+			))
+		print(colored('-------', 'white'))
+
 
 def showstate():
 	ec2 = boto3.resource('ec2')
@@ -30,11 +168,32 @@ def showstate():
 
 		if has_tag:
 			instances_with.append(instance.id)
+			ec2info = defaultdict()
+			for tag in instance.tags:
+				if 'Name'in tag['Key']:
+					name = tag['Value']
+			ec2info[instance.id] = {
+				'Name': name,
+				'Type': instance.instance_type,
+				'State': instance.state['Name'],
+				'Private IP': instance.private_ip_address,
+				'Public IP': instance.public_ip_address,
+				'Launch Time': instance.launch_time
+			}
+			attributes = ['Name', 'Type', 'State', 'Private IP', 'Public IP', 'Launch Time']
+			for instance_id, instance in ec2info.items():
+				for key in attributes:
+		#			print("{0}: {1}".format(key, instance[key]))
+		#		print("------")
+					print("{0}: {1}".format(
+						colored(key, 'yellow'),
+						colored(instance[key], 'cyan')
+					))
+				print(colored('-------', 'white'))
+		# This is kind of a noop
 		else:
 			instances_without.append(instance.id)
 
-	print(oper, typeval)
-	print(" %s" % instances_with)
 
 
 def startinstances():
@@ -67,32 +226,60 @@ def stopinstances():
 				break
 
 
-def descinstances():
-	ec2 = boto3.client('ec2')
-	response = ec2.describe_instances()
-	print(response)
+
+def usage():
+	print ("Usage: ", sys.argv[0]," running|stopped qa|prod|dev")
+	print ("       ", sys.argv[0]," regions|zones")
+	print ("       ", sys.argv[0]," help|all|verbose (colorized allinfo)")
+	print ("       ", sys.argv[0]," start|stop qa|prod|dev")
+	print ("Notes: Type tags can vary make sure you have the right one")
+	print ("       DO NOT stop|start unless you are sure!!")
+	sys.exit()
 
 
 
 if oper in ['stopped','running']:
+	typeval = sys.argv[2]
+	filtered = True
 	showstate()
 	sys.exit()
 
 
+if oper in ['all']:
+	filtered = False
+	listall()
+	sys.exit()
+
+
+if oper in ['verbose']:
+	colorlist()
+	sys.exit()
+
+
+if oper in ['help','-h','-u','-usage','usage']:
+	usage()
+
+
+if oper in ['regions']:
+	descec2regions()
+	sys.exit()
+
+
+if oper in ['zones']:
+	descmyec2zones()
+	sys.exit()
+
+
 if oper in ['start']:
+	typeval = sys.argv[2]
 	startinstances()
 	sys.exit()
 
 
 if oper in ['stop']:
+	typeval = sys.argv[2]
 	stopinstances()
 	sys.exit()
 
 
-if oper in ['all']:
-	descinstances()
-	sys.exit()
-
-
-print("Error: Incorect syntax: stop|start or stopped|running show state")
-
+usage()
