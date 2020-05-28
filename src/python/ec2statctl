@@ -1,5 +1,6 @@
 #!/usr/bin/python3
 # These all require that the OS or python vers pkgs be installed
+# XXX-jrf: Split into 2 utils one that starts/stops and one that is info. Also ditch coloring on 'all' and 'type' 
 from collections import defaultdict
 from termcolor import colored
 import boto3
