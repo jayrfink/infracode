@@ -1,0 +1,33 @@
+#!/bin/bash
+#$ -S /bin/bash
+# Merges 2 bamfiles into one
+# SETUP:
+# - $HOME/mergebams
+# - 2 bamfiles in $HOME/mergebams
+# - deploy instance and install samtools
+source /etc/profile
+REMOTE_USER="ubuntu"
+REMOTE_DIR="/home/$REMOTE_USER"
+SSH_KEY="mergedemo.pem"
+
+echo "Starting up mergedemo_exec ec2 instance"
+$HOME/bin/ec2ctlr start mergedemo_exec # Start instance using tag->type->name
+echo "Sleeping 2 minutes while instance settles in AWS"
+sleep 2m
+
+REMOTE_ADDR=`$HOME/bin/ec2info running mergedemo_exec|\
+              grep Public|awk '{print $3}'`
+
+cd $HOME/mergebams
+echo "Copying up 2 bamfiles"
+scp -i $SSH_KEY *.bam $REMOTE_USER@$REMOTE_ADDR:$REMOTE_DIR
+echo "Merging bamfiles into one bamfile called aaa.bam"
+ssh -i $SSH_KEY $REMOTE_USER@$REMOTE_ADDR \
+    "$REMOTE_DIR/samtools-1.9/samtools  merge \
+     $REMOTE_DIR/aaa.bam $REMOTE_DIR/yyy.bam \
+     $REMOTE_DIR/zzz.bam"
+echo "Retrieving bamfile aaa.bam"
+scp -i $SSH_KEY $REMOTE_USER@$REMOTE_ADDR:$REMOTE_DIR/aaa.bam $HOME
+
+echo "Stopping mergedemo_exec ec2 instance"
+$HOME/bin/ec2ctlr stop mergedemo_exec # Stop instance using tag->type->name
