@@ -1,0 +1,134 @@
+#!/usr/bin/python3
+# These all require that the OS or python vers pkgs be installed
+from collections import defaultdict
+from termcolor import colored
+import boto3
+import pprint
+import sys
+
+# Used only for filtering by running|stopped then by Type
+typeval = None
+
+if len(sys.argv) < 2:
+	oper = None
+else:
+	oper = sys.argv[1]
+
+filtered = False
+
+
+def showstate():
+	ec2 = boto3.resource('ec2')
+	instances_with = []
+	instances_without = []
+
+	for instance in ec2.instances.all():
+		if instance.state['Name'] != oper:
+			continue
+
+		has_tag = False
+		for tag in instance.tags:
+			if tag['Key'] == 'Type' and tag['Value'] == typeval:
+				has_tag = True
+				break
+
+		if has_tag:
+			instances_with.append(instance.id)
+			ec2info = defaultdict()
+			for tag in instance.tags:
+				if 'Name'in tag['Key']:
+					name = tag['Value']
+			ec2info[instance.id] = {
+				'Name': name,
+				'Type': instance.instance_type,
+				'State': instance.state['Name'],
+				'Private IP': instance.private_ip_address,
+				'Public IP': instance.public_ip_address,
+				'Launch Time': instance.launch_time
+			}
+			attributes = ['Name', 'Type', 'State', 'Private IP', 'Public IP', 'Launch Time']
+			for instance_id, instance in ec2info.items():
+				for key in attributes:
+					print("{0}: {1}".format(key, instance[key]))
+				print("------")
+#					print("{0}: {1}".format(
+#						colored(key, 'yellow'),
+#						colored(instance[key], 'cyan')
+#					))
+#				print(colored('-------', 'white'))
+		# This is kind of a noop
+		else:
+			instances_without.append(instance.id)
+
+
+
+def startinstances():
+	ec2 = boto3.resource('ec2')
+	for instance in ec2.instances.all():
+		if instance.state['Name'] != 'stopped':
+			continue
+
+		has_tag = False
+		for tag in instance.tags:
+			if tag['Key'] == 'Type' and tag['Value'] == typeval:
+				has_tag = True
+				oper_instance = ec2.Instance(instance.id)
+				pprint.pprint(oper_instance.start())
+				break
+
+
+def stopinstances():
+	ec2 = boto3.resource('ec2')
+	for instance in ec2.instances.all():
+		if instance.state['Name'] != 'running':
+			continue
+
+		has_tag = False
+		for tag in instance.tags:
+			if tag['Key'] == 'Type' and tag['Value'] == typeval:
+				has_tag = True
+				oper_instance = ec2.Instance(instance.id)
+				pprint.pprint(oper_instance.stop())
+				break
+
+
+
+def usage():
+	print ("Usage: ", sys.argv[0]," running|stopped qa|prod|dev")
+	print ("       ", sys.argv[0]," help")
+	print ("       ", sys.argv[0]," start|stop qa|prod|dev")
+	print ("Notes: Type tags can vary make sure you have the right one")
+	print ("       DO NOT stop|start unless you are sure!!")
+	sys.exit()
+
+
+
+if oper in ['stopped','running']:
+	typeval = sys.argv[2]
+	filtered = True
+	showstate()
+	sys.exit()
+
+
+if oper in ['verbose']:
+	colorlist()
+	sys.exit()
+
+
+if oper in ['help','-h','-u','-usage','usage']:
+	usage()
+
+
+if oper in ['start']:
+	typeval = sys.argv[2]
+	startinstances()
+	sys.exit()
+
+
+if oper in ['stop']:
+	typeval = sys.argv[2]
+	stopinstances()
+	sys.exit()
+
+
+usage()

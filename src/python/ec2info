@@ -1,6 +1,5 @@
 #!/usr/bin/python3
 # These all require that the OS or python vers pkgs be installed
-# XXX-jrf: Split into 2 utils one that starts/stops and one that is info. Also ditch coloring on 'all' and 'type' 
 from collections import defaultdict
 from termcolor import colored
 import boto3
@@ -143,13 +142,15 @@ def listall():
 	attributes = ['Name', 'Type', 'State', 'Private IP', 'Public IP', 'Launch Time']
 	for instance_id, instance in ec2info.items():
 		for key in attributes:
-			# xxx-jrf: Old way of printing
-			#print("{0}: {1}".format(key, instance[key]))
-			print("{0}: {1}".format(
-				colored(key, 'yellow'),
-				colored(instance[key], 'cyan')
-			))
-		print(colored('-------', 'white'))
+#			 xxx-jrf: Old way of printing
+			print("{0}: {1}".format(key, instance[key]))
+# XXX-jrf: coloring messes up redirection
+#			print("{0}: {1}".format(
+#				colored(key, 'yellow'),
+#				colored(instance[key], 'cyan')
+#			))
+#		print(colored('-------', 'white'))
+		print("-------------")
 
 
 def showstate():
@@ -184,47 +185,19 @@ def showstate():
 			attributes = ['Name', 'Type', 'State', 'Private IP', 'Public IP', 'Launch Time']
 			for instance_id, instance in ec2info.items():
 				for key in attributes:
-		#			print("{0}: {1}".format(key, instance[key]))
-		#		print("------")
-					print("{0}: {1}".format(
-						colored(key, 'yellow'),
-						colored(instance[key], 'cyan')
-					))
-				print(colored('-------', 'white'))
+					print("{0}: {1}".format(key, instance[key]))
+				print("------")
+#					print("{0}: {1}".format(
+#						colored(key, 'yellow'),
+#						colored(instance[key], 'cyan')
+#					))
+#				print(colored('-------', 'white'))
 		# This is kind of a noop
 		else:
 			instances_without.append(instance.id)
 
 
 
-def startinstances():
-	ec2 = boto3.resource('ec2')
-	for instance in ec2.instances.all():
-		if instance.state['Name'] != 'stopped':
-			continue
-
-		has_tag = False
-		for tag in instance.tags:
-			if tag['Key'] == 'Type' and tag['Value'] == typeval:
-				has_tag = True
-				oper_instance = ec2.Instance(instance.id)
-				pprint.pprint(oper_instance.start())
-				break
-
-
-def stopinstances():
-	ec2 = boto3.resource('ec2')
-	for instance in ec2.instances.all():
-		if instance.state['Name'] != 'running':
-			continue
-
-		has_tag = False
-		for tag in instance.tags:
-			if tag['Key'] == 'Type' and tag['Value'] == typeval:
-				has_tag = True
-				oper_instance = ec2.Instance(instance.id)
-				pprint.pprint(oper_instance.stop())
-				break
 
 
 
@@ -232,9 +205,6 @@ def usage():
 	print ("Usage: ", sys.argv[0]," running|stopped qa|prod|dev")
 	print ("       ", sys.argv[0]," regions|zones")
 	print ("       ", sys.argv[0]," help|all|verbose (colorized allinfo)")
-	print ("       ", sys.argv[0]," start|stop qa|prod|dev")
-	print ("Notes: Type tags can vary make sure you have the right one")
-	print ("       DO NOT stop|start unless you are sure!!")
 	sys.exit()
 
 
@@ -270,17 +240,6 @@ if oper in ['zones']:
 	descmyec2zones()
 	sys.exit()
 
-
-if oper in ['start']:
-	typeval = sys.argv[2]
-	startinstances()
-	sys.exit()
-
-
-if oper in ['stop']:
-	typeval = sys.argv[2]
-	stopinstances()
-	sys.exit()
 
 
 usage()
