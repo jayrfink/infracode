@@ -1,0 +1,5 @@
+#!/bin/bash
+username=$1
+for j in `qstat -f -u '*'|grep Eqw |grep $username|awk '{print $1}'`
+   do qmod -cj $j  
+done

@@ -1,0 +1,2 @@
+# get a list of Eqw jobs
+eqws='qstat -f -u "*"|grep Eqw'
