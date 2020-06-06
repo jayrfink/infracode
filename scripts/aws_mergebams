@@ -8,7 +8,7 @@
 source /etc/profile
 REMOTE_USER="ubuntu"
 REMOTE_DIR="/home/$REMOTE_USER"
-SSH_KEY="mergedemo.pem"
+SSH_KEY="mykey.pem"
 
 echo "Starting up mergedemo_exec ec2 instance"
 $HOME/bin/ec2ctlr start mergedemo_exec # Start instance using tag->type->name
