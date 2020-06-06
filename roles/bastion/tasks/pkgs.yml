@@ -1,9 +1,0 @@
-# -e "hostgroups=foo bar rusername=[ubuntu|ec2-user|redhat|centos]
----
-- hosts: "{{ hostgroups }}"
-  remote_user: "{{ rusername }}"
-  become: yes
-  become_method: sudo
-  tasks:
-   - name: ansible
-     apt: name=ansible state=present install_recommends=yes 

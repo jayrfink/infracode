@@ -1,0 +1,15 @@
+#  -e "hostgroups=foo src_export=someserver:/somepath mnt_local=/path"
+# XXX-jrf: Can opts be passed in variables? Is that too much?
+#          Example string for EFS &| FSx
+#          fstype=nfs4 opts=nfsvers=4.1,rsize=1048576,wsize=1048576,hard,timeo=600,retrans=2,noresvport
+#          nfs_server: fs-XXXXXXX.efs.us-east-1.amazonaws.com:/
+---
+- hosts: "{{ hostgroups }}"
+  become: yes
+  become_method: sudo
+  vars:
+   src_path: "{{ src_export }}"
+   mnt_path: "{{ mnt_local }}"
+  tasks:
+  - name: Mount NFS
+    mount: name="{{ mnt_path }}"  src="{{ src_path }}" fstype=nfs opts=rw,nfsvers=3,intr,timeo=14,nolock,noatime,noacl,sec=sys,proto=tcp state=mounted

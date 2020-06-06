@@ -1,10 +1,10 @@
-# -e "hostgroups=foo bar"
+# -e "hostgroups=foo bar mysqluser=USERNAME mysql mysqlpass=PASSWORD
 ---
 - hosts: "{{ hostgroups }}"
   become: yes
   vars:
-    mysql_username: adriftdba
-    mysql_password: adriftdba-mydarnsecret
+    mysql_username: "{{ mysqluser }}"
+    mysql_password: "{{ mysqlpass }}"
    - name: mysql-server
      apt: name=mysql-server state=present install_recommends=yes
    - name: mysql-pythondb

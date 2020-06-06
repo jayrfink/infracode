@@ -11,4 +11,3 @@
      group:
        name: "{{ newgroup }}"
        gid: "{{ newgid }}"
-

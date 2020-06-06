@@ -1,0 +1,13 @@
+# "-e hostgroups=foo bar baz service=someservice
+---
+- hosts: "{{ hostgroups }}"
+  become: yes
+  become_method: sudo
+  vars:
+   svc_name: "{{ service }}"
+  tasks:
+   - name: restart "{{ svc_name }}"
+     service:
+       name: "{{ svc_name }}"
+       enabled: 'yes'
+       state: 'restarted'

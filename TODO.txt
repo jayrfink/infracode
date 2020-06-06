@@ -1,5 +1,0 @@
-- convert to dynamic inventory
-- add a lustre option
-- mysql subnet that connects to a webfront network (gcp or aws)
-
-

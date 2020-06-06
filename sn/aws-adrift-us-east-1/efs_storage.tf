@@ -31,16 +31,4 @@ resource "aws_efs_mount_target" "efs-adrift" {
 
 }
 
-resource "aws_s3_bucket" "adrift-bucket01" {
-  bucket = "adrift-bucket01"
-  acl = "private"
-  versioning {
-    enabled = true
-  }
-
-  tags {
-    Name = "adrift-bucket01"
-  }
-
-}
 
