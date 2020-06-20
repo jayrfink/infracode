@@ -1,4 +1,4 @@
-# ansible-playbook -u [ubuntu|ec2-user|redhat|centos[$vers]] -e "username=$LOGINID usercomment="$First_LastName hostgroups=foo" adduser.yml 
+# ansible-playbook -u [ubuntu|ec2-user|redhat|centos[$vers]] -e "username=$LOGINID usercomment="$First_LastName hostgroups=foo -e keyfile=path_to_keys" adduser.yml 
 # an alternative here would be to gen the keys there and download them
 # optional add the -e "email_addr=someone@someplace.org"
 # WARNING: THIS ADDS THE USER WITH FULL SUDO!
@@ -10,6 +10,7 @@
     user_name: "{{ username }}"
     comment: "{{ usercomment }}"
 	newuseremail: "{{ email_addr }}"
+    authkeys: "{{ keyfile }}"
   tasks:
    - name: "{{ user_name }}"
      user: name="{{ user_name }}" shell=/bin/bash uid=1001 createhome=yes comment="{{ comment }}" home=/home/"{{ user_name }}"
@@ -25,7 +26,7 @@
         owner="{{ user_name }}" group="{{ user_name }}" mode=0700
 
    - name: upload_pubkey
-     template: src=.keys/authorized_keys
+     template: src="{{ authkeys }}"
         dest=/home/"{{ user_name }}"/.ssh/authorized_keys
         owner="{{ user_name }}" group="{{ user_name }}" mode=0600
 

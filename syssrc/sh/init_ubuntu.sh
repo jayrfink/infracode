@@ -1,5 +1,5 @@
 #!/bin/bash
-# USAGE: configure.sh $ipaddr||DNSname keyname
+# USAGE: configure.sh $ipaddr||DNSname full_path_to_pemkey
 progname=${0##*/}          # Name of script
 toppid=$$                  # This PID
 results=/dev/null          # For traps
@@ -20,14 +20,14 @@ ERRORMESSAGE
 }
 
 remote=$1
-keyfile=`.keys/$2.pem`
+keyfile=$2
 
 if [ ! $remote ]; then
 	bomb "No address found"
 fi
 
 if [ ! $keyfile ]; then
-	bomb "Error, no keyfile found in .keys"
+	bomb "Error, no keyfile found."
 fi
 
 # Setup python symlink so ansible will work
