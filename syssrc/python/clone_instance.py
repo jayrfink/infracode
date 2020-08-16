@@ -1,4 +1,5 @@
 #!/usr/bin/python3
+# work in progress, would prefer to make all of this options
 import boto3
 import sys
 import os
