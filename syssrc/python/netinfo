@@ -1,0 +1,77 @@
+#!/usr/bin/python3
+import boto3
+import pprint
+import json
+import sys
+
+
+if len(sys.argv) < 2:
+    oper = None
+else:
+    oper = sys.argv[1]
+
+
+
+def vpc_info():
+	ec2 = boto3.resource('ec2')
+	client = boto3.client('ec2')
+	filters = [{'Name':'tag:Name', 'Values':['*']}]
+	vpcs = list(ec2.vpcs.filter(Filters=filters))
+	for vpc in vpcs:
+	    response = client.describe_vpcs(
+	        VpcIds=[
+	            vpc.id,
+	        ]
+	    )
+	    print(json.dumps(response, sort_keys=True, indent=4))
+
+
+def subnet_info():
+	ec2 = boto3.resource('ec2')
+	client = boto3.client('ec2')
+
+	filters = [{'Name':'tag:Name', 'Values':['*']}]
+	subnets = list(ec2.subnets.filter(Filters=filters))
+    
+	for subnet in subnets:
+	    response = client.describe_subnets(
+	    )
+	    print(json.dumps(response, sort_keys=True, indent=4))
+
+
+
+
+
+def usage():
+    print ("Usage: ", sys.argv[0]," subnets|vpcs")
+    print ("       ", sys.argv[0]," help|all")
+    sys.exit()
+
+
+
+if oper in ['all']:
+	vpc_info()
+	subnet_info()
+	sys.exit()
+
+
+
+if oper in ['vpc','vpcs']:
+    vpc_info()
+    sys.exit()
+
+
+if oper in ['subnet','subnets']:
+	subnet_info()
+	sys.exit()
+
+
+if oper in ['help','-h','-u','-usage','usage']:
+    usage()
+
+
+# Default to all
+vpc_info()
+subnet_info()
+sys.exit()
+                                         
