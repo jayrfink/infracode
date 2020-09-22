@@ -1,0 +1,10 @@
+# -e "hostgroups=$hostgroups"
+# example
+---
+- hosts: "{{ hostgroups }}"
+  become: yes
+  become_method: sudo
+   - name: tcpdump
+     yum:
+             name: tcpdump
+             state: present

@@ -1,0 +1,11 @@
+# -e "hostgroups=$hostgroups"
+---
+- hosts: "{{ hostgroups }}"
+  become: yes
+  become_method: sudo
+  tasks:
+   - name: yum_update
+     yum:
+             name: '*'
+             update_cache: yes
+             update_only: yes
