@@ -13,7 +13,7 @@ STAT=/var/tmp/hunter.stat
 >$STAT
 
 # make sure perms are good
-chown rcadmin:rcadmin $STAT
+chown nagios:nagios $STAT
 chmod 0600 $STAT
 
 if [ -f /tmp/$ANCHOR_LOG ]; then
