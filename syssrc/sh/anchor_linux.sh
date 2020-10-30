@@ -66,3 +66,4 @@ for f in *; do
 done
 
 echo "OKAY: No fingerprints found" > $STAT
+exit 0
