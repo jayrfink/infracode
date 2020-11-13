@@ -1,5 +1,5 @@
-resource "aws_security_group" "lustre-sg" {
-   name = "lustre-sg"
+resource "aws_security_group" "lustre-secgrp" {
+   name = "lustre-secgrp"
    vpc_id = "${aws_vpc.vpc-adrift.id}"
 
    ingress {
@@ -18,6 +18,6 @@ resource "aws_fsx_lustre_file_system" "lustre-storage-programs" {
   security_group_ids = [
         "${aws_security_group.adrift-egress.id}",
         "${aws_security_group.adrift-lnet.id}",
-        "${aws_security_group.lustre-sg.id}",
+        "${aws_security_group.lustre-secgrp.id}",
 	]
 }

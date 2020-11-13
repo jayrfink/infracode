@@ -51,9 +51,9 @@ resource "aws_nat_gateway" "natgw-vpc-adrift-w" {
   }
 }
 
-resource "aws_security_group" "adrift-sg-egress" {
-  name        = "sg-egress"
-  description = "sg-egress"
+resource "aws_security_group" "adrift-secgrp-egress" {
+  name        = "secgrp-egress"
+  description = "secgrp-egress"
   vpc_id = "${aws_vpc.vpc-adrift.id}"
 
   egress {
@@ -64,12 +64,12 @@ resource "aws_security_group" "adrift-sg-egress" {
   }
 
   tags = {
-    Name = "adrift-sg-egress"
+    Name = "adrift-secgrp-egress"
   }
 }
 
-resource "aws_security_group" "adrift-sg-ssh" {
-  name        = "sg-ssh"
+resource "aws_security_group" "adrift-secgrp-ssh" {
+  name        = "secgrp-ssh"
   description = "SSH"
   vpc_id = "${aws_vpc.vpc-adrift.id}"
 
@@ -83,7 +83,7 @@ resource "aws_security_group" "adrift-sg-ssh" {
   }
 
   tags = {
-    Name = "adrift-sg-ssh"
+    Name = "adrift-secgrp-ssh"
   }
 }
 

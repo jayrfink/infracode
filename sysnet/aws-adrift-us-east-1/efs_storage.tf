@@ -1,5 +1,5 @@
-resource "aws_security_group" "efs-sg" {
-   name = "efs-sg"
+resource "aws_security_group" "efs-secgrp" {
+   name = "efs-secgrp"
    vpc_id = "${aws_vpc.vpc-adrift.id}"
 
    ingress {
@@ -25,8 +25,8 @@ resource "aws_efs_mount_target" "efs-adrift" {
    file_system_id  = "${aws_efs_file_system.efs-adrift.id}"
    subnet_id = "${aws_subnet.net-adrift-p.id}"
   security_groups = [
-        "${aws_security_group.adrift-sg-egress.id}",
-        "${aws_security_group.efs-sg.id}",
+        "${aws_security_group.adrift-secgrp-egress.id}",
+        "${aws_security_group.efs-secgrp.id}",
   ]
 
 }

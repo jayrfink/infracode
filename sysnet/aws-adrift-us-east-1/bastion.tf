@@ -2,8 +2,8 @@ resource "aws_instance" "adrift-bastion" {
   ami           = "ami-04b9e92b5572fa0d1"
   instance_type = "t2.micro"
   vpc_security_group_ids = [ 
-	"${aws_security_group.adrift-sg-egress.id}",
-	"${aws_security_group.adrift-sg-ssh.id}",
+	"${aws_security_group.adrift-secgrp-egress.id}",
+	"${aws_security_group.adrift-secgrp-ssh.id}",
   ]
   subnet_id = "${aws_subnet.net-adrift-w.id}"
   availability_zone = "us-east-1b"
