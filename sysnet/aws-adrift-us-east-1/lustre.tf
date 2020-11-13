@@ -17,6 +17,7 @@ resource "aws_fsx_lustre_file_system" "lustre-storage-programs" {
     storage_capacity = 1200
   security_group_ids = [
         "${aws_security_group.adrift-egress.id}",
+        "${aws_security_group.adrift-lnet.id}",
         "${aws_security_group.lustre-sg.id}",
 	]
 }

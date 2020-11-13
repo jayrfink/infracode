@@ -87,6 +87,26 @@ resource "aws_security_group" "adrift-sg-ssh" {
   }
 }
 
+resource "aws_security_group" "vpc-adrift-lnet" {
+  name        = "vpc-adrift-lnet"
+  description = "https"
+  vpc_id = "${aws_vpc.vpc-adrift.id}"
+
+  ingress {
+    from_port   = 988
+    to_port     = 988
+    protocol    = "tcp"
+    cidr_blocks = [
+       "0.0.0.0/0",
+      ]
+  }
+
+  tags = {
+    Name = "vpc-adrift-lustre"
+  }
+}
+
+
 resource "aws_security_group" "vpc-adrift-https" {
   name        = "vpc-adrift-https"
   description = "https"
@@ -105,6 +125,8 @@ resource "aws_security_group" "vpc-adrift-https" {
     Name = "vpc-adrift-https"
   }
 }
+
+
 
 resource "aws_route_table" "rtbl-vpc-adrift-w" {
   vpc_id = "${aws_vpc.vpc-adrift.id}"
