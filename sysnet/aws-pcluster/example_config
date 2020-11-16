@@ -31,9 +31,8 @@ scheduler = sge
 initial_queue_size = 2                                                          
 max_queue_size = 4                                                              
 maintain_initial_size = true                                                    
-# These are pointers to labels below                                            
+vpc_settings = default # Virtual Private Cloud Label                            
 fsx_settings = fs      # Lustre 240Mbps high speed storage label                
-vpc_settings = vpc-net # Virtual Private Cloud Label                            
                                                                                 
 [fsx fs]                                                                        
 shared_dir = /MOUNTDIR                # ex: /analysis                           
@@ -42,7 +41,7 @@ imported_file_chunk_size = 1024       # this works well
 import_path = s3://BUCKET-NAME        # ex: s3://rc-services                    
 export_path = s3://BUCKET-NAME/SUBDIR # ex: s3://rc-services/results            
                                                                                 
-[vpc vpc-net]                                                                   
+[vpc default]                                                                   
 use_public_ips = false # do NOT give compute nodes  public IPs      
 # So, it is far easier to first run 'pcluster configure' then
 # modify the default ./parallelcluster/config file by adding
