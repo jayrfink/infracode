@@ -5,7 +5,7 @@ resource "aws_s3_bucket" "adrift-example-bucket" {
     enabled = false
   }
 
-  tags {
+  tags = {
     Name = "doomwad-repo"
   }
 
