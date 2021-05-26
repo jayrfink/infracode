@@ -44,9 +44,9 @@ done
 if [ $NO_REPLIES -gt $threshold ]; then
 	nodelist=`cat $TRACKER_FILE`
 	rm -f $TRACKER_FILE
-	echo "CRITICAL: $NO_REPLIES of $max_nodes servers offline. Servers: $nodelist" 
+	echo "$0 $node_prefix CRITICAL: Servers not replying to ping $nodelist" 
 	exit 2
 fi
 
 rm -f $TRACKER_FILE
-echo "$0: OKAY" && exit 0
+echo "$0 $node_prefix: OKAY" && exit 0
