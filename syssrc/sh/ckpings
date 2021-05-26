@@ -1,6 +1,4 @@
 #!/bin/bash
-# USAGE: node-prefix-name max-nodes threshold
-# EXAMPLE: computenode 32 16
 node_prefix="NONE"
 max_nodes="NONE"
 threshold="NONE"
