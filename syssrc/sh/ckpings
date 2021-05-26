@@ -1,30 +1,48 @@
 #!/bin/bash
 # USAGE: node-prefix-name max-nodes threshold
 # EXAMPLE: computenode 32 16
-node_prefix=$1
-max_nodes=$2
-threshold=$3
+node_prefix="NONE"
+max_nodes="NONE"
+threshold="NONE"
 PING_COUNT=1
 NO_REPLIES=0
 TRACKER_FILE=/var/tmp/$0_tracker_$$.txt
 
-if [ ! $node_prefix ] ; then
-	echo "Error: No node prefix given" && exit 255
-fi
-
-if [ $node_prefix = "usage" ]; then
+usage()
+{
 	echo "Check that a series of servers with common hostname"
 	echo "such as comp1 comp2 comp3 etc are online and set a"
 	echo "threshold value to alarm if crossed."
-	echo "$0 prefix-name max-servers threshold"
+	echo "$0 -n prefix -t threhold -m max-servers"
 	echo "Example:"
-	echo "  $0 hpcsrv 16 8"
-	exit 0
-fi
+	echo "  $0 -n hpcsrv -m 8 -t 4"
+}
 
-if [ ! $max_nodes ]; then
-	echo "Error: Max given" && exit 255
-fi
+usage_exit_error()
+{
+	echo $1
+	usage
+	exit 1
+}
+
+while [ "$#" -gt "0" ]
+do
+  opt="${1//-}"
+  opt="${1//-}"
+  opt=$(echo "${opt}" | cut -c 1 2>/dev/null)
+  case $opt in
+    n) shift; node_prefix=$1;;
+    t) shift; threshold=$1;; 
+    m) shift; max_nodes=$1;; # MANDATORY 
+    u) usage ; exit 0;;
+    *) usage; exit 1;;
+  esac
+  shift
+done
+
+[ ${node_prefix} = "NONE" ] && usage_exit_error "No prefix given"
+[ ${max_nodes} = "NONE" ]   && usage_exit_error "No max nodes"
+[ ${threshold} = "NONE" ]   && usage_exit_error "No threshold"
 
 if [ ! $threshold ]; then
 	echo "Error: Max given" && exit 255
