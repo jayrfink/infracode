@@ -1,0 +1,52 @@
+#!/bin/bash
+# USAGE: node-prefix-name max-nodes threshold
+# EXAMPLE: computenode 32 16
+node_prefix=$1
+max_nodes=$2
+threshold=$3
+PING_COUNT=1
+NO_REPLIES=0
+TRACKER_FILE=/var/tmp/$0_tracker_$$.txt
+
+if [ ! $node_prefix ] ; then
+	echo "Error: No node prefix given" && exit 255
+fi
+
+if [ $node_prefix = "usage" ]; then
+	echo "Check that a series of servers with common hostname"
+	echo "such as comp1 comp2 comp3 etc are online and set a"
+	echo "threshold value to alarm if crossed."
+	echo "$0 prefix-name max-servers threshold"
+	echo "Example:"
+	echo "  $0 hpcsrv 16 8"
+	exit 0
+fi
+
+if [ ! $max_nodes ]; then
+	echo "Error: Max given" && exit 255
+fi
+
+if [ ! $threshold ]; then
+	echo "Error: Max given" && exit 255
+fi
+
+# ping each node and see if it replied
+for i in `seq 1 $max_nodes`;
+do
+	ping -c $PING_COUNT $node_prefix$i
+	if [ $? -gt 0 ]; then
+		let NO_REPLIES=NO_REPLIES+1
+		echo -n "$node_prefix$i " >> $TRACKER_FILE
+	fi
+done
+
+# if the number of nodes is over threshold, alarm critical
+if [ $NO_REPLIES -gt $threshold ]; then
+	nodelist=`cat $TRACKER_FILE`
+	rm -f $TRACKER_FILE
+	echo "CRITICAL: $NO_REPLIES of $max_nodes servers offline. Servers: $nodelist" 
+	exit 2
+fi
+
+rm -f $TRACKER_FILE
+echo "$0: OKAY" && exit 0
