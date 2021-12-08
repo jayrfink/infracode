@@ -1,0 +1,25 @@
+# to use in a playbooks
+# - import_playbook ../../common/tasks/$file.yml
+#   vars:
+#   hostgroups: $hostgroups   
+#   src_file: ../../[argos|aether|tier2|..]/files/filename
+#   dst_file: /full/path/destination/systems
+#   username: $owner_of_file
+#   groupname: $group_of_file
+#   perms: permissions_settings (e.g. 0644)
+
+---
+- hosts: "{{ hostgroups }}"
+  become: yes
+  become_method: sudo
+  vars:
+    source_file: "{{ src_file }}"
+    dest_file:   "{{ dst_file }}"
+  tasks:
+   - name: Copy {{ src_file }} to {{ dest_file }}
+     copy: 
+      src:  "{{ source_file }}"
+      dest: "{{ dest_file }}"
+      owner: "{{ username }}"
+      group: "{{ groupname }}"
+      mode: "{{ perms }}"
