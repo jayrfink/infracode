@@ -1,0 +1,10 @@
+# -e "hostgroups=$hostgroups"
+---
+- hosts: "{{ hostgroups }}"
+  become: yes
+  become_method: sudo
+  tasks:
+   - name: cache_update
+     apt: 
+       update_cache: yes
+

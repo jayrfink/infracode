@@ -1,0 +1,43 @@
+# -e "hostgroups=group username=ar666 uid=666999 \
+#                first_lastname=Test_user keydir=/home/user/.ssh" addsudoer.yml
+---
+- hosts: "{{ hostgroups }}"
+  become: yes
+  become_method: sudo
+  vars:
+   newuserlogin: "{{ username }}"
+   newuserid: "{{ uid }}"
+   newusercomment: "{{ first_lastname }}"
+   userkeydir: "{{ keydir }}"
+  tasks:
+   - name: groupadd
+     group:
+       name: "{{ newuserlogin }}"
+       gid: "{{ newuserid }}"
+
+   - name: newuser
+     user:
+       name: "{{ newuserlogin }}"
+       group: "{{ newuserlogin }}"
+       uid: "{{ newuserid }}"
+       comment: "{{ newusercomment }}"
+       shell: /bin/bash
+       state: present
+       create_home: yes
+
+   - name: addsudoer
+     lineinfile: "dest=/etc/sudoers
+      insertafter=EOF
+      line='{{ username }} ALL=(ALL) NOPASSWD: ALL'"
+     become: yes
+     become_method: sudo
+
+   - name: create_ssh_dir
+     file: path=/home/{{ username }}/.ssh state=directory
+        owner={{ username }} group={{ username }} mode=0700
+
+   - name: upload_pubkey
+     template: src={{ userkeydir }}/id_rsa.pub
+        dest=/home/{{ username }}/.ssh/authorized_keys
+        owner={{ username }} group={{ username }} mode=0600
+

@@ -1,0 +1,8 @@
+# -e "hostgroups=$hostgroups"
+---
+- hosts: "{{ hostgroups }}"
+  become: yes
+  become_method: sudo
+  tasks:
+   - name: daemon reload
+     command: /bin/systemctl daemon-reload

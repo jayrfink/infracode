@@ -1,4 +1,4 @@
-# ansible-playbook  -e "hostgroups=foo username=ar6 hostgroups=foo" userdel.yml
+# ansible-playbook  -e "hostgroups=foo username=ar6" userdel.yml
 ---
 - hosts: "{{ hostgroups }}"
   become: yes
@@ -10,3 +10,4 @@
      user:
        name: "{{ deluserlogin }}"
        state: absent
+       remove: yes
