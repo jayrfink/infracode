@@ -1,0 +1,5 @@
+o automatic routing, tgw and attachments in 01/
+
+o automate step 02
+
+o use terraform.tfvars for "as much as possible" 

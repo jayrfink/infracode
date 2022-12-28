@@ -1,0 +1,95 @@
+DEPLOYMENT & CONFIGURATION OF THE OUTRIDER STAGING ENVIRONMENT
+  
+This document provides instructions on how to deploy a test environment
+that simulates how a direct connect OU operates. It is also very useful
+for other environments where you want a management access point that is
+not in the same VPC as any hosting or network gear.
+
+DIAGRAM
+  &&&&
+ &&&&&&                           --> vpc-ingress
+Internet                            | 
+ &&&&&&  <- natgw <- vpc-core -- vpc-util
+  &&&&                       \__ vpc-XXXX <- some sort of internal app
+
+DEPLOY THE INITIAL CORE & UTIL VPCs PLUS TEST INSTANCES
+Be sure to change the pemkey to match yours....
+These VPCs are in terraform under outrider/ and they preconfigure
+everything except transit gateway, ingress vpc and ingress to util
+vpc peering.
+
+    cd 01/
+    terraform init && terraform apply --auto-approve
+
+CONFIGUATION & TRANSIT GATEWAY
+- Find main route table for each vpc and apply the following names:
+   rtbl-outrider-core-main
+   rtbl-outrider-util-main
+- Create a new transit gateway (TGW) named tgw-outrider; make sure to
+  deselect default route association and default route propogation.
+
+- Create VPC based TGW Attachments and associate them with their
+  corresponding networks like so:
+    core-outrider-attach net-outrider-core-tegr-us-east1a
+    util-outrider-attach net-outrider-util-us-east1a
+
+- AWS Transit Gateway Route tables; create two route tables.
+  Name the route tables rtbl-outrider-core1a & rtbl-outrider-util-1a
+  and associate both route tables with tgw-outrider
+
+- Under AWS Transit Gateway route tables, choose rtbl-outrider-util-1a,
+  Associations, Create association. Associate util-outrider-attach to this route
+
+- On the same route table, choose Routes, Create route, enter the 0.0.0.0/0
+  route, and choose (core-outrider-attach) vpc-sandbox-core as destination
+
+- OPTIONAL Only if you do not want additional VPCs to route through to core to
+           each other. Add these additional routes: 192.168.0.0/16,
+           172.16.0.0/12 (not 10.0.0.0/8)  as Blackhole to make sure
+           VPCs can’t communicate with each other through the NAT gateway.
+
+- Under AWS Transit Gateway route tables, choose rtbl-outrider-core1a,
+  Associations, Create association. Associate core-outrider-attach to
+  this route table.
+
+- On the same route table, choose Routes, choose Create route, and enter
+  10.254.34.0/24 w/ attachment util-outrider-attach
+
+- Route Tables edit rtbl-outrider-util-main
+  adding a 0.0.0.0/0 route and set tgw-outrider (util-outrider-attach) as dest
+
+- Edit the rtbl-vpc-outrider-core-natgw-us-east1a route table associated with
+  the core-vpc and add 10.254.34.0/24 core-outrider-attach as destination.
+
+VERIFICATION
+- SSH to outrider-core-natgw1a
+- scp pemkey to outrider-core-natgw1a:$HOME/key
+- ssh -i key IPADDR of outrider-util1a
+- apt-get update, apt install lynx, lynx --nocolor https://bwelstudy.org/
+- Logout && terminate outrider-core-natgw1a (no longer needed)
+
+DEPLOY & PEER ACCESS VPC PLUS 1 INSTANCE
+- In the terraform outrider/ directory cd ../02
+- terraform init && terraform apply --auto-approve
+- Assign the name rtbl-outrider-ingress-main to the main ingress vpc route table
+- Peer vpc-outrider-util to vpc-outrider-ingress, name the peering connection:
+   outrider-ingress-util
+- In rtbl-outrider-util-main add the following route:
+   10.253.0.0/28  PeeringConnection (outrider-ingress-util)
+- In rtbl-vpc-ingress-us-east1a add the following route:
+   10.254.34.0/24 PeeringConnection (outrider-ingress-util)
+
+VERIFICATION
+- SSH to outrider-ingress1a
+- scp pemkey to outrider-ingress1a:$HOME/key
+- ssh -i key IPADDR of outrider-util1a
+- lynx --nocolor https://bwelstudy.org/
+
+ADDING AZs and VPCs
+- To add AZs clone the needed subnets & walkthrough configuring routing
+  for TGW and subnets starting at step "- Create VPC based TGW Attachments..."
+- To add a VPC, clone the util VPC and follow the same steps as adding it.
+- Consult the Cloud Design Spreadsheet for address ranges to use.
+** HINT: Adding stuff is easiest by cloning the needed pieces into new
+         terraform files then s/1a/1b/,set the new address ranges and apply
+
