@@ -13,3 +13,7 @@ Layout
 * sysrcs: Systems Remote Configuration Source & Controller
 * syssrc: Systems Related Program and Shell Script Sources
 
+TODO
+-------------------------------------------------------------------------------
+I have some great variables files examples which is a safe way to do
+isolated deployments. 
